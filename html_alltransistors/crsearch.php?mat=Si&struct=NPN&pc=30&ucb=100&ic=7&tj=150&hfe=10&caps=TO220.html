@@ -1,0 +1,5938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+       <meta charset="UTF-8">
+<title>Bipolar Transistor Cross-reference Search | Equivalent Transistors</title>
+<meta name="DESCRIPTION" content="cross-reference search, transistors, equivalent">
+<meta name="KEYWORDS" content="cross-reference, search, datasheet, equivalent">
+
+<style>
+<!--
+/* наша таблица */
+table.sort{
+    border-spacing:0.1em;
+    margin-bottom:1em;
+    margin-top:1em
+}
+
+/* ячейки таблицы */
+table.sort td{
+    border:1px solid #CCCCCC;
+    padding:0.2em 0.2em
+}
+
+/* заголовки таблицы */
+table.sort thead td{
+    cursor:pointer;
+    cursor:hand;
+    font-weight:bold;
+    text-align:center;
+    vertical-align:middle
+}
+
+/* заголовок отсортированного столбца */
+table.sort thead td.curcol{
+    background-color:#999999;
+    color:#FFFFFF
+}
+-->
+</style>
+
+<script type="text/javascript">
+<!--
+/*
+originally written by paul sowden <paul@idontsmoke.co.uk> | https://idontsmoke.co.uk
+modified and localized by alexander shurkayev <alshur@narod.ru> | https://htmlcoder.visions.ru
+last modification 06.12.2009 by KDG https://htmlweb.ru/
+*/
+
+initial_sort_id = 0; // номер начального отсортированного столбца, начиная с нуля
+initial_sort_up = 0; // 0 - сортировка вниз, 1 - вверх
+var sort_case_sensitive = false; // чуствительновть к регистру при сотрировке
+
+function _sort(a, b) {
+    var a = a[0];
+    var b = b[0];
+    var _a = (a + '').replace(/,/, '.');
+    var _b = (b + '').replace(/,/, '.');
+    if (parseInt(_a) && parseInt(_b)) return sort_numbers(parseInt(_a), parseInt(_b));
+    else if (!sort_case_sensitive) return sort_insensitive(a, b);
+    else return sort_sensitive(a, b);
+}
+
+function sort_numbers(a, b) {
+    return a - b;
+}
+
+function sort_insensitive(a, b) {
+    var anew = a.toLowerCase();
+    var bnew = b.toLowerCase();
+    if (anew < bnew) return -1;
+    if (anew > bnew) return 1;
+    return 0;
+}
+
+function sort_sensitive(a, b) {
+    if (a < b) return -1;
+    if (a > b) return 1;
+    return 0;
+}
+
+function getConcatenedTextContent(node) {
+    var _result = "";
+    if (node == null) {
+        return _result;
+    }
+    var childrens = node.childNodes;
+    var i = 0;
+    while (i < childrens.length) {
+        var child = childrens.item(i);
+        switch (child.nodeType) {
+            case 1: // ELEMENT_NODE
+            case 5: // ENTITY_REFERENCE_NODE
+                _result += getConcatenedTextContent(child);
+                break;
+            case 3: // TEXT_NODE
+            case 2: // ATTRIBUTE_NODE
+            case 4: // CDATA_SECTION_NODE
+                _result += child.nodeValue;
+                break;
+            case 6: // ENTITY_NODE
+            case 7: // PROCESSING_INSTRUCTION_NODE
+            case 8: // COMMENT_NODE
+            case 9: // DOCUMENT_NODE
+            case 10: // DOCUMENT_TYPE_NODE
+            case 11: // DOCUMENT_FRAGMENT_NODE
+            case 12: // NOTATION_NODE
+            // skip
+            break;
+        }
+        i++;
+    }
+    return _result;
+}
+
+function sort(e) {
+    var el = window.event ? window.event.srcElement : e.currentTarget;
+
+    while (el.tagName.toLowerCase() != "td") el = el.parentNode;
+
+    var a = new Array();
+    var name = el.lastChild.nodeValue;
+    var dad = el.parentNode;
+    var table = dad.parentNode.parentNode;
+    var up = table.up; // no set/getAttribute!
+
+    var node, arrow, curcol;
+    for (var i = 0; (node = dad.getElementsByTagName("td").item(i)); i++) {
+        if (node.lastChild.nodeValue == name){
+            curcol = i;
+            if (node.className == "curcol"){
+                arrow = node.firstChild;
+                table.up = Number(!up);
+            }else{
+                node.className = "curcol";
+                arrow = node.insertBefore(document.createElement("span"),node.firstChild);
+                    arrow.appendChild(document.createTextNode(""));
+                table.up = 0;
+            }
+            arrow.innerHTML=((table.up==0)?"&#8595;":"&#8593;")+"&nbsp;";
+        }else{
+            if (node.className == "curcol"){
+                node.className = "";
+                if (node.firstChild) node.removeChild(node.firstChild);
+            }
+        }
+    }
+
+    var tbody = table.getElementsByTagName("tbody").item(0);
+    for (var i = 0; (node = tbody.getElementsByTagName("tr").item(i)); i++) {
+        a[i] = new Array();
+        a[i][0] = getConcatenedTextContent(node.getElementsByTagName("td").item(curcol));
+        a[i][1] = getConcatenedTextContent(node.getElementsByTagName("td").item(1));
+        a[i][2] = getConcatenedTextContent(node.getElementsByTagName("td").item(0));
+        a[i][3] = node;
+    }
+
+    a.sort(_sort);
+
+    if (table.up) a.reverse();
+
+    for (var i = 0; i < a.length; i++) {
+        tbody.appendChild(a[i][3]);
+    }
+}
+
+function init(e) {
+    if (!document.getElementsByTagName) return;
+    
+    if (document.createEvent) function click_elem(elem){
+        var evt = document.createEvent("MouseEvents");
+        evt.initMouseEvent("click", false, false, window, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, elem);
+        elem.dispatchEvent(evt);
+    }
+
+    for (var j = 0; (thead = document.getElementsByTagName("thead").item(j)); j++) {
+        var node;
+        for (var i = 0; (node = thead.getElementsByTagName("td").item(i)); i++) {
+            if (node.addEventListener) node.addEventListener("click", sort, false);
+            else if (node.attachEvent) node.attachEvent("onclick", sort);
+            node.title = "Click on column header to sort";
+        }
+        thead.parentNode.up = 0;
+        
+        if (typeof(initial_sort_id) != "undefined"){
+            td_for_event = thead.getElementsByTagName("td").item(initial_sort_id);
+            if (td_for_event.dispatchEvent) click_elem(td_for_event);
+            else if (td_for_event.fireEvent) td_for_event.fireEvent("onclick");
+            if (typeof(initial_sort_up) != "undefined" && initial_sort_up){
+                if (td_for_event.dispatchEvent) click_elem(td_for_event);
+                else if (td_for_event.fireEvent) td_for_event.fireEvent("onclick");
+            }
+        }
+    }
+}
+
+var root = window.addEventListener || window.attachEvent ? window : document.addEventListener ? document : null;
+if (root){
+    if (root.addEventListener) root.addEventListener("load", init, false);
+    else if (root.attachEvent) root.attachEvent("onload", init);
+}
+//-->
+</script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><link rel="alternate" href="https://alltransistors.com/crsearch.php?mat=Si&struct=NPN&r1=0&r2=0&r1r2=0&pc=30&ucb=100&uce=0&ueb=0&ic=7&tj=150&ft=0&cc=0&hfe=10&caps=TO220&page=0" hreflang="en" />
+<link rel="alternate" href="https://alltransistors.com/es/crsearch.php?mat=Si&struct=NPN&r1=0&r2=0&r1r2=0&pc=30&ucb=100&uce=0&ueb=0&ic=7&tj=150&ft=0&cc=0&hfe=10&caps=TO220&page=0" hreflang="es" />
+<link rel="alternate" href="https://alltransistors.com/ru/crsearch.php?mat=Si&struct=NPN&r1=0&r2=0&r1r2=0&pc=30&ucb=100&uce=0&ueb=0&ic=7&tj=150&ft=0&cc=0&hfe=10&caps=TO220&page=0" hreflang="ru" />
+<link rel="shortcut icon" href="https://alltransistors.com/favicon.ico" type="image/x-icon" />
+<link rel="apple-touch-icon" href="https://alltransistors.com/apple-touch-icon.png" />
+<link rel="apple-touch-icon" sizes="57x57" href="https://alltransistors.com/apple-touch-icon-57x57.png" />
+<link rel="apple-touch-icon" sizes="72x72" href="https://alltransistors.com/apple-touch-icon-72x72.png" />
+<link rel="apple-touch-icon" sizes="76x76" href="https://alltransistors.com/apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" sizes="114x114" href="https://alltransistors.com/apple-touch-icon-114x114.png" />
+<link rel="apple-touch-icon" sizes="120x120" href="https://alltransistors.com/apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" sizes="144x144" href="https://alltransistors.com/apple-touch-icon-144x144.png" />
+<link rel="apple-touch-icon" sizes="152x152" href="https://alltransistors.com/apple-touch-icon-152x152.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="https://alltransistors.com/apple-touch-icon-180x180.png" />
+<style>
+body {
+	background: #ffffff;
+	margin: 5px;
+}
+p, br, h1, h2, h3, h4, h5, h6, table {
+	padding-left: 20px;
+	padding-right: 20px;
+}
+#wrapper{
+    background: #ffffff;
+	width: 100%;
+	max-width: 1200px;
+	margin: 0 auto;
+	margin-top:5px;
+	height: auto !important;
+}
+
+#header{
+    border: 0px solid #000;
+    background: #ffffff;
+    width:100%;
+    max-width:1200px;
+    height:150px;
+    margin:0 auto;
+    margin-top:0px;
+}
+#header h1 {
+    font-size: 3.5em;
+	text-shadow: none;
+	text-align: center;
+	padding-top: 0.5em;
+}
+
+#content #colRight{
+	background: #ffffff;
+    float:left;
+	margin-left:0%;
+    width:25%;
+}
+
+#content #colLeft{
+	float:left;
+	margin-right:0px;
+    width:75%;
+}
+
+#content #colSearch{
+	margin-right:0px;
+    width:55%;
+}
+
+#footer {
+	background: #ffffff;
+	width: 100%;
+	max-width: 1200px;
+	height: 90px;
+	margin: 0 auto;
+	padding-top: 0.01em;
+	clear: both;
+}
+@media screen and (min-width:240px) and (max-width:479px) {
+body{
+	margin: 0px;
+}
+#header {
+	font-size: 0.7em;
+ } 
+#wrapper #colLeft {
+    float:none;
+    width:100%;
+    margin-right:0px; 
+}
+#wrapper #colRight {
+    margin-left:0px;
+    margin-top:5px;
+    float:none;
+    width:100%;
+}
+#content #colSearch{
+	margin-right:0px;
+    width:100%;
+}
+}
+@media screen and (min-width:480px) and (max-width:900px) {
+body{
+	margin: 0px;
+}
+#wrapper #colLeft {
+    float:none;
+    width:100%;
+    margin-right:0px; 
+}
+#wrapper #colRight {
+    margin-left:0px;
+    margin-top:5px;
+    float:none;
+    width:100%;
+}
+#content #colSearch{
+	margin-right:0px;
+    width:90%;
+}
+}
+@media screen and (min-width:901px) and (max-width:1400px) {
+#wrapper { 
+width: 90%;
+margin: 0 auto;
+}
+#wrapper #content #colLeft {
+width:75%; 
+} 
+#wrapper #content #colRight {
+width:25%;
+}
+#wrapper #content #colSearch{
+	margin-right:0px;
+    width:65%;
+}
+}
+
+    div.z {
+    border: 1px solid #cccccc;
+    border-radius:10px;
+    -webkit-border-radius:10px;
+    -moz-border-radius:10px;
+    -ms-border-radius:10px;
+    -o-border-radius:10px;
+    -khtml-border-radius: 10px;
+    background:#ffffff;
+    margin: 5 5px;
+    color: #555555;
+    font: 90%/1.9em Arial, Helvetica, sans-serif;
+    text-decoration: none;
+    }
+
+    div.z a {
+    color: #379be9;
+	text-decoration: none;
+	}
+
+    body {height: auto;}
+    @import url(https://fonts.googleapis.com/css?family=Cantora+One);
+    @import url(https://fonts.googleapis.com/css?family=Exo:400,500,700,700italic);
+    @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,600,700);
+
+    * {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    }
+
+    * {
+    box-sizing: border-box;
+    }
+
+
+    .first {
+    width: 100%;
+    height: 100%;
+    }
+
+
+    .first {
+    margin: .5em 0;
+    font: 1em 'Cantora One', sans-serif;
+    }
+
+
+    .first:after, .second:after, .three:after, .four:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+    }
+
+
+    * html .first, * html .second, * html .three,* html .four  {
+    zoom: 1;
+    }
+
+    *:first-child + html .first, *:first-child + html .second, *:first-child + html .three, *:first-child + html .four {
+    zoom: 1;
+    }
+
+    .first nav[role="full-horizontal"] {
+    width: 100%;
+    }
+
+    .first nav[role="full-horizontal"] ul {
+    width: 100%;
+    list-style: none;
+    }
+
+    .first nav[role="full-horizontal"] ul > li {
+    position: relative;
+    float: left;
+    padding: .25em 1em;
+    margin: 1.25em 1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    border-radius: .75em;
+    transition-duration: .3s;
+    transition-timing-function: ease-in-out;
+    transition-property: background, color, padding, border-radius;
+    box-shadow: 0.1em -0.1em 0 0.1em rgba(0, 0, 0, 0.2), inset 0 0 0 0.15em rgba(0, 0, 0, 0.4), -0.1em 0.1em 0 0.1em rgba(0, 0, 0, 0.2);
+    }
+
+    .first nav[role="full-horizontal"] ul > li:after {
+    position: absolute;
+    z-index: -1;
+    content: "";
+    right: 0;
+    border-radius: 50%;
+    box-shadow: 1em 1em 0 2em rgba(255, 255, 255, 0.5);
+    }
+
+    .first nav[role="full-horizontal"] ul > li:last-child:after {
+    box-shadow: none;
+    }
+
+    .first nav[role="full-horizontal"] ul > li:hover {
+    background-color: rgba(251, 93, 0, 0.8);
+    padding-left: 3em;
+    }
+
+    .first nav[role="full-horizontal"] ul > li:hover > a {
+    color: #fff;
+    }
+
+    .first nav[role="full-horizontal"] ul > li > a {
+    color: #333;
+    text-decoration: none;
+    font-size: 1.4em;
+    transition: color .3s ease-in-out;
+    }
+
+
+    @media screen and (max-width: 44em) {
+
+    .first nav[role="full-horizontal"] ul {
+    padding: 0 .5em;
+    }
+
+    .first nav[role="full-horizontal"] ul > li {
+    width: 100%;
+    padding: .45em .25em;
+    margin: 0 0 .55em 0;
+    }
+
+    .first nav[role="full-horizontal"] ul > li:after {
+    box-shadow: none;
+    }
+    }
+
+    * {
+    box-sizing: border-box;
+    }
+
+    h1 {
+    color: #000000;
+    font: 150%/1.5 Arial, Helvetica, sans-serif;
+    text-decoration: none;
+    transition: color 0.4s linear 0s;
+    margin: 2em 0 .3em 2em;
+    }
+
+    h2 {
+    color: #000000;
+    font: 125%/1.2 Arial, Helvetica, sans-serif;
+    text-decoration: none;
+    transition: color 0.4s linear 0s;
+    margin: 2em 0 .3em 2em;
+    }
+
+    h3 {
+    color: #000000;
+    font: 100%/1.0 Arial, Helvetica, sans-serif;
+    text-decoration: none;
+    transition: color 0.4s linear 0s;
+    margin: 2em 0 .3em 2em;
+    }
+    
+.buyss {    
+background:    #ff0000;
+background:    linear-gradient(#ff0000, #ce0000);
+border:        1px solid #ce0000;
+border-radius: 5px;
+padding:       8px 20px;
+color:         #ffffff;
+display:       inline-block;
+font:          normal bold 20px/1 "Roboto", sans-serif;
+text-align:    center;
+}
+
+a.buyss:link {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.search {margin: 0 auto}
+.search {
+	/* устанавливаем необходимую ширину формы в зависимости от дизайна
+	** форма без проблем растягивается */
+	width: 35%;
+
+	/* кнопку отправки будем позиционировать абсолютно,
+	** поэтому необходимо это свойство */
+	position: relative;
+}
+
+@media screen and (min-width:10px) and (max-width:479px) {
+.search {
+	width: 75%;
+}
+}
+@media screen and (min-width:480px) and (max-width:900px) {
+.search {
+	width: 50%;
+}
+}
+
+
+.search input {
+	/* отключаем бордюры у инпутов */
+	border: none;
+}
+
+/* стили для поля ввода */
+.search .input {
+	/* растягиваем поле ввода на всю ширину формы */
+	width: 100%;
+
+	/* за счет верхнего (8px) и нижнего (9px) внутренних отступов
+	** регулируем высоту формы
+	** внутренний отступ справа (37px) делаем больше левого,
+	** т.к. там будет размещена кнопка отправки	*/
+	padding: 8px 37px 9px 15px;
+
+	/* чтобы ширина поля ввода (100%) включала в себя внутренние отступы */
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+
+	/* добавляем внутренние тени */
+	box-shadow: inset 0 0 5px rgba(0,0,0,0.1), inset 0 1px 2px rgba(0,0,0,0.3);
+
+	/* закругляем углы */
+	border-radius: 20px;
+
+	background: #EEE;
+	font: 13px Tahoma, Arial, sans-serif;
+	color: #555;
+	outline: none;
+}
+
+/* меняем оформление поля ввода при фокусе */
+.search .input:focus {
+	box-shadow: inset 0 0 5px rgba(0,0,0,0.2), inset 0 1px 2px rgba(0,0,0,0.4);
+	background: #E8E8E8;
+	color: #333;
+}
+
+/* оформляем кнопку отправки */
+.search .submit {
+	/* позиционируем кнопку абсолютно от правого края формы */
+	position: absolute;
+	top: 0;
+	right: 0;
+
+	width: 37px;
+
+	/* растягиваем кнопку на всю высоту формы */
+	height: 100%;
+
+	cursor: pointer;
+	background: url(https://alltransistors.com/images/go.png) 50% no-repeat;
+
+	/* добавляем прозрачность кнопке отправки */
+	opacity: 0.5;
+}
+
+/* при наведении курсора меняем прозрачность кнопки отправки */
+.search .submit:hover {
+	opacity: 0.8;
+}
+
+/* данное свойство необходимо для того, чтобы в браузерах
+** Chrome и Safari можно было стилизовать инпуты */
+input[type="search"] {
+	-webkit-appearance: none;
+}
+
+
+
+
+
+.searchsmd {margin: 0 auto}
+.searchsmd {
+	/* устанавливаем необходимую ширину формы в зависимости от дизайна
+	** форма без проблем растягивается */
+	width: 90%;
+
+	/* кнопку отправки будем позиционировать абсолютно,
+	** поэтому необходимо это свойство */
+	position: relative;
+}
+
+.searchsmd input {
+	/* отключаем бордюры у инпутов */
+	border: none;
+}
+
+/* стили для поля ввода */
+.searchsmd .input {
+	/* растягиваем поле ввода на всю ширину формы */
+	width: 100%;
+
+	/* за счет верхнего (8px) и нижнего (9px) внутренних отступов
+	** регулируем высоту формы
+	** внутренний отступ справа (37px) делаем больше левого,
+	** т.к. там будет размещена кнопка отправки	*/
+	padding: 8px 37px 9px 15px;
+
+	/* чтобы ширина поля ввода (100%) включала в себя внутренние отступы */
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+
+	/* добавляем внутренние тени */
+	box-shadow: inset 0 0 5px rgba(0,0,0,0.1), inset 0 1px 2px rgba(0,0,0,0.3);
+
+	/* закругляем углы */
+	border-radius: 20px;
+
+	background: #EEE;
+	font: 13px Tahoma, Arial, sans-serif;
+	color: #555;
+	outline: none;
+}
+
+/* меняем оформление поля ввода при фокусе */
+.searchsmd .input:focus {
+	box-shadow: inset 0 0 5px rgba(0,0,0,0.2), inset 0 1px 2px rgba(0,0,0,0.4);
+	background: #E8E8E8;
+	color: #333;
+}
+
+/* оформляем кнопку отправки */
+.searchsmd .submit {
+	/* позиционируем кнопку абсолютно от правого края формы */
+	position: absolute;
+	top: 0;
+	right: 0;
+
+	width: 37px;
+
+	/* растягиваем кнопку на всю высоту формы */
+	height: 100%;
+
+	cursor: pointer;
+	background: url(https://alltransistors.com/images/go.png) 50% no-repeat;
+
+	/* добавляем прозрачность кнопке отправки */
+	opacity: 0.5;
+}
+
+/* при наведении курсора меняем прозрачность кнопки отправки */
+.searchsmd .submit:hover {
+	opacity: 0.8;
+}
+
+/* данное свойство необходимо для того, чтобы в браузерах
+** Chrome и Safari можно было стилизовать инпуты */
+input[type="search"] {
+	-webkit-appearance: none;
+}
+
+/*содержание, аналогичное книжному (с точками к номеру страницы) HTML/CSS*/
+ul.leaders li { clear: both; }
+
+ul.leaders li span:first-child {
+  float: left;
+  padding: 0 .8em 0 0;
+  margin: 0;
+}
+ul.leaders li span + span {
+  float: right;
+  padding: 0 0 0 .8em;
+  margin: 0;
+}
+
+ul.leaders li:after {
+  content: "";
+  display: block;
+  overflow: hidden;
+  height: 1em;
+  border-bottom: 1px dotted;
+}
+
+</style>
+
+<!--[if lt IE 9]>
+<style>
+/* задаем отдельные стили для браузеров IE ниже 9-й версии */
+*+html .search {
+	/* для IE7 подгоняем ширину под другие браузеры и добавляем правый
+	** внутренний отступ, чтобы кнопка отправки встала на свое место */
+	width: 28%;
+	padding: 0 52px 0 0;
+}
+.search .input {
+	border: 1px solid #DFDFDF;
+	border-top: 1px solid #B3B3B3;
+	padding-top: 7px;
+	background-bottom: 8px;
+}
+.search .input:focus {
+	border: 1px solid #CFCFCF;
+	border-top: 1px solid #999;
+}
+.search .submit {
+	filter: alpha(opacity=50);
+}
+.search .submit:hover {
+	filter: alpha(opacity=80);
+}
+
+/* задаем отдельные стили для браузеров IE ниже 9-й версии */
+*+html .searchsmd {
+	/* для IE7 подгоняем ширину под другие браузеры и добавляем правый
+	** внутренний отступ, чтобы кнопка отправки встала на свое место */
+	width: 90%;
+	padding: 0 52px 0 0;
+}
+.searchsmd .input {
+	border: 1px solid #DFDFDF;
+	border-top: 1px solid #B3B3B3;
+	padding-top: 7px;
+	background-bottom: 8px;
+}
+.searchsmd .input:focus {
+	border: 1px solid #CFCFCF;
+	border-top: 1px solid #999;
+}
+.searchsmd .submit {
+	filter: alpha(opacity=50);
+}
+.searchsmd .submit:hover {
+	filter: alpha(opacity=80);
+}
+</style>
+<![endif]--></head>
+<body>
+<div id="wrapper">
+
+				<div class="z">
+				<h2>All Transistors.  Datasheet</h2>
+
+				<div class="first">
+				<nav role="full-horizontal">
+				<ul>
+				<li><a href="https://alltransistors.com/">BJT</a></li>
+				<li><a href="https://alltransistors.com/mosfet/">MOSFET</a></li>
+				<li><a href="https://alltransistors.com/igbt/">IGBT</a></li>
+				<li><a href="https://alltransistors.com/scr/">SCR</a></li>
+				<li><a href="https://alltransistors.com/smd-search.php">SMD CODE</a></li>
+				<li><a href="https://alltransistors.com/korp_tran.php">PACKAGES</a></li>
+				<li><a href="https://alltransistors.com/mobile-apps.php">APPS</a></li>
+				</ul>
+				</nav>
+				</div>
+				</div>
+				
+    <div id="content">
+	<div id="colLeft">
+	<div class="z">
+			<p>
+				<div align="center">
+					<form action="https://alltransistors.com/search.php" method="GET" class="search">
+						<input type="search" name="search" placeholder="search" class="input" value=""/>
+						<input type="submit" name="" value=""  class="submit" />
+					</form>
+			<p>&nbsp;
+				
+<div id="goog-top">
+<style>
+			.adaptiv_block_1 { display:inline-block; width: 320px; height: 100px; }
+			@media (min-width: 450px) { .adaptiv_block_1 { width: 300px; height: 250px; } }
+			@media (min-width: 800px) { .adaptiv_block_1 { width: 336px; height: 280px; } }
+			</style>
+			<!-- adaptiv_block_1 -->
+			<ins class="adsbygoogle adaptiv_block_1"
+			     data-ad-client="ca-pub-7146070913866998"
+			     data-ad-slot="3519401169"
+				 data-full-width-responsive="true"></ins>
+			
+</div>
+
+<div id="sample-top" style='display:none;'>
+</div>
+
+
+
+
+
+				</div>
+<h1>Bipolar Transistor Cross-Reference Search</h1>
+<form action="https://alltransistors.com/crsearch.php" method="GET">
+    <p>Material = <input name="mat" class="input" type="text" maxlength="10" style="background: #f7f7f7; width: 100px; text-align: right" value="Si">
+    <p>Struct = <input name="struct" class="input" type="text" maxlength="10" style="background: #f7f7f7; width: 112px; text-align: right" value="NPN">
+    <p>Pc > <input name="pc" class="input" type="text" maxlength="10" style="background: #f7f7f7; width: 132px; text-align: right" value="30"> W
+    <p>Vcb > <input name="ucb" class="input" type="text" maxlength="10" style="background: #f7f7f7; width: 125px; text-align: right" value="100"> V
+    <p>Vce > <input name="uce" class="input" type="text" maxlength="10" style="background: #f7f7f7; width: 125px; text-align: right" value="0"> V
+    <p>Veb > <input name="ueb" class="input" type="text" maxlength="10" style="background: #f7f7f7; width: 125px; text-align: right" value="0"> V
+    <p>Ic > <input name="ic" class="input" type="text" maxlength="10" style="background: #f7f7f7; width: 138px; text-align: right" value="7"> A
+    <p>Tj > <input name="tj" class="input" type="text" maxlength="10" style="background: #f7f7f7; width: 138px; text-align: right" value="150"> C
+    <p>Ft > <input name="ft" class="input" type="text" maxlength="10" style="background: #f7f7f7; width: 138px; text-align: right" value="0"> MHz
+    <p>Cc < <input name="cc" class="input" type="text" maxlength="10" style="background: #f7f7f7; width: 135px; text-align: right" value="0"> pF
+    <p>Hfe > <input name="hfe" class="input" type="text" maxlength="10" style="background: #f7f7f7; width: 131px; text-align: right" value="10">
+    <p>Caps = <input name="caps" class="input" type="text" maxlength="10" style="background: #f7f7f7; width: 121px; text-align: right" value="TO220">
+    <p>R1 = <input name="r1" class="input" type="text" maxlength="10" style="background: #f7f7f7; width: 135px; text-align: right" value="0"> kOhm
+    <p>R2 = <input name="r2" class="input" type="text" maxlength="10" style="background: #f7f7f7; width: 135px; text-align: right" value="0"> kOhm
+    <p>R1/R2 = <input name="r1r2" class="input" type="text" maxlength="10" style="background: #f7f7f7; width: 115px; text-align: right" value="0">
+     <p> <input class="button" type="submit" value="SEARCH"><br>
+<p>Empty or zero fields are ignored during the search!
+</form>
+<p><a href="https://alltransistors.com/how_to_choose_replacement_for_bipolar_transistor.php">How to choose a replacement for a bipolar transistor &#128279;</a>
+<p>&nbsp;
+<div id="sample-get-price" style='display:none;'>
+<p>&nbsp;
+</div>
+<div id="goog-center">
+<p><!-- al-center-336-280-n3-190523 -->
+				<ins class="adsbygoogle"
+				     style="display:inline-block;width:336px;height:280px"
+				     data-ad-client="ca-pub-7146070913866998"
+				     data-ad-slot="7400593359"></ins>
+				</div>
+<div id="sample-center" style='display:none;'>
+</div>
+<p><h2>Cross-Reference Search Result (Equivalent Transistors)</h2>
+<p>
+		<table class="sort"><thead> 
+		<tr align="left"><td>Type</td><td>&nbsp;Mat</td><td>&nbsp;Struct</td><td>&nbsp;Pc</td><td>&nbsp;Vcb</td><td>&nbsp;Ic</td><td>&nbsp;Tj</td><td>&nbsp;Hfe</td><td>&nbsp;Caps</td></tr></thead><tbody><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=59162 target="_blank">13005ADL
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;75
+</td><td>&nbsp;400
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=59153 target="_blank">13007
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;85
+</td><td>&nbsp;700
+</td><td>&nbsp;9
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=59170 target="_blank">13007DL
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;400
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=59171 target="_blank">13007S
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;75
+</td><td>&nbsp;500
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=59172 target="_blank">13007T
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;700
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=59154 target="_blank">13009
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;700
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=59173 target="_blank">13009A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;110
+</td><td>&nbsp;700
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=59174 target="_blank">13009SDL
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;400
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=59175 target="_blank">13009T
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;95
+</td><td>&nbsp;700
+</td><td>&nbsp;11
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=102 target="_blank">28025
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;750
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=64589 target="_blank">2N6045G
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;75
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=5861 target="_blank">2N6473
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;110
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=5862 target="_blank">2N6474
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;130
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=6099 target="_blank">2N6738
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;450
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=6100 target="_blank">2N6739
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;550
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=6102 target="_blank">2N6740
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;650
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=13082 target="_blank">2SC2334
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;200
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=13083 target="_blank">2SC2334O
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;150
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;70
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=13084 target="_blank">2SC2334R
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;150
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=13085 target="_blank">2SC2334Y
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;150
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;120
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=13086 target="_blank">2SC2335
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=62960 target="_blank">2SC2335F
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220F
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=13087 target="_blank">2SC2335O
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;30
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=13088 target="_blank">2SC2335R
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=13089 target="_blank">2SC2335Y
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=13134 target="_blank">2SC2373
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;200
+</td><td>&nbsp;7.5
+</td><td>&nbsp;150
+</td><td>&nbsp;35
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=13196 target="_blank">2SC2427
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=13209 target="_blank">2SC2438
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;150
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;120
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=13210 target="_blank">2SC2439
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;150
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;120
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=13304 target="_blank">2SC2503
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;500
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=13305 target="_blank">2SC2504
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;500
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=13333 target="_blank">2SC2527
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;120
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;60
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=13685 target="_blank">2SC2768
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;250
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;50
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=13686 target="_blank">2SC2768A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;250
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;80
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=13739 target="_blank">2SC2810
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;300
+</td><td>&nbsp;7
+</td><td>&nbsp;200
+</td><td>&nbsp;60
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=13819 target="_blank">2SC2867
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;300
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;100
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=13863 target="_blank">2SC2898
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;500
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=14043 target="_blank">2SC3038
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;50
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=14044 target="_blank">2SC3039
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;30
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=52716 target="_blank">2SC3158
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220F
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=14237 target="_blank">2SC3170
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=14240 target="_blank">2SC3173
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;330
+</td><td>&nbsp;7
+</td><td>&nbsp;175
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=14241 target="_blank">2SC3174
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;330
+</td><td>&nbsp;7
+</td><td>&nbsp;175
+</td><td>&nbsp;30
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=14242 target="_blank">2SC3175
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;400
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;80
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=14243 target="_blank">2SC3176
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;400
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;75
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=14272 target="_blank">2SC3189
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;250
+</td><td>&nbsp;7.5
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=14365 target="_blank">2SC3257
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;250
+</td><td>&nbsp;10
+</td><td>&nbsp;200
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=14847 target="_blank">2SC3522
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=14849 target="_blank">2SC3524
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;150
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;30
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=14898 target="_blank">2SC3562
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;500
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=14899 target="_blank">2SC3563
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;500
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;30
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=14904 target="_blank">2SC3568
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;175
+</td><td>&nbsp;12
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=14925 target="_blank">2SC3589
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;250
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;30
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=14926 target="_blank">2SC3590
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;330
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=14927 target="_blank">2SC3591
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;400
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=14993 target="_blank">2SC3626
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;500
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;55
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=14994 target="_blank">2SC3627
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;250
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;30
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=15108 target="_blank">2SC3692
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=58434 target="_blank">2SC3834F
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;200
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;70
+</td><td>&nbsp;TO220F
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=52725 target="_blank">2SC3973A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;45
+</td><td>&nbsp;900
+</td><td>&nbsp;7
+</td><td>&nbsp;
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220Fa
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=52726 target="_blank">2SC3973B
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;45
+</td><td>&nbsp;1000
+</td><td>&nbsp;7
+</td><td>&nbsp;
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220Fa
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=15700 target="_blank">2SC4055
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;600
+</td><td>&nbsp;8
+</td><td>&nbsp;180
+</td><td>&nbsp;100
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=15772 target="_blank">2SC4106
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;175
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=15773 target="_blank">2SC4106L
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;175
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=15774 target="_blank">2SC4106M
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;175
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=15775 target="_blank">2SC4106N
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;175
+</td><td>&nbsp;60
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=15776 target="_blank">2SC4107
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;500
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=15777 target="_blank">2SC4107L
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;500
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=15778 target="_blank">2SC4107M
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;500
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=15779 target="_blank">2SC4107N
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;500
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;60
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=15880 target="_blank">2SC4164
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;500
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=15881 target="_blank">2SC4164L
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;500
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=15882 target="_blank">2SC4164M
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;500
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=15883 target="_blank">2SC4164N
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;500
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;30
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=16010 target="_blank">2SC4274
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;500
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=16202 target="_blank">2SC4441
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;35
+</td><td>&nbsp;600
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;45
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=58438 target="_blank">2SC4458L
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;900
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220F
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=16229 target="_blank">2SC4477
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;330
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=16230 target="_blank">2SC4478
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;400
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=52730 target="_blank">2SC4508
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;500
+</td><td>&nbsp;10
+</td><td>&nbsp;
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220F
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=52087 target="_blank">2SC4546
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;600
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220F
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=16306 target="_blank">2SC4550
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;175
+</td><td>&nbsp;30
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=16307 target="_blank">2SC4551
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;100
+</td><td>&nbsp;10
+</td><td>&nbsp;175
+</td><td>&nbsp;30
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=16308 target="_blank">2SC4552
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;100
+</td><td>&nbsp;15
+</td><td>&nbsp;175
+</td><td>&nbsp;30
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=16309 target="_blank">2SC4553
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;100
+</td><td>&nbsp;7.5
+</td><td>&nbsp;175
+</td><td>&nbsp;160
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=16310 target="_blank">2SC4554
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;100
+</td><td>&nbsp;15
+</td><td>&nbsp;175
+</td><td>&nbsp;200
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=16312 target="_blank">2SC4559
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;175
+</td><td>&nbsp;150
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=52737 target="_blank">2SC4595
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;100
+</td><td>&nbsp;12
+</td><td>&nbsp;
+</td><td>&nbsp;60
+</td><td>&nbsp;TO220Fa
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63100 target="_blank">2SC4622
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=52740 target="_blank">2SC4664
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;250
+</td><td>&nbsp;8
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;ITO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=52745 target="_blank">2SC4834
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;45
+</td><td>&nbsp;500
+</td><td>&nbsp;8
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;ITO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=52746 target="_blank">2SC4849
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;250
+</td><td>&nbsp;7
+</td><td>&nbsp;
+</td><td>&nbsp;100
+</td><td>&nbsp;TO220Fa
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=58398 target="_blank">2SC4977
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;450
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220F
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=56272 target="_blank">2SC5304LS
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;35
+</td><td>&nbsp;1000
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220FI
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=51813 target="_blank">2SC5439
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;1000
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;14
+</td><td>&nbsp;TO220NIS
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=55987 target="_blank">2SC5763
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;55
+</td><td>&nbsp;700
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=56455 target="_blank">2SC5764
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;700
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220ML
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=55998 target="_blank">2SC5830
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;35
+</td><td>&nbsp;1000
+</td><td>&nbsp;8
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220F
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=55900 target="_blank">2SC6090LS
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;35
+</td><td>&nbsp;1500
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220FI
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=17474 target="_blank">2SD1024
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;3000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=17475 target="_blank">2SD1025
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;200
+</td><td>&nbsp;8
+</td><td>&nbsp;175
+</td><td>&nbsp;3000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=17476 target="_blank">2SD1026
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;100
+</td><td>&nbsp;15
+</td><td>&nbsp;175
+</td><td>&nbsp;3000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=17477 target="_blank">2SD1027
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;200
+</td><td>&nbsp;15
+</td><td>&nbsp;175
+</td><td>&nbsp;3000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=17549 target="_blank">2SD1069
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;300
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=17625 target="_blank">2SD1123
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;200
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=17628 target="_blank">2SD1126
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;120
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;1500
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=17629 target="_blank">2SD1126K
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;120
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;1500
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=17630 target="_blank">2SD1127
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;120
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;2000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=17631 target="_blank">2SD1127K
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;120
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;2000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=17691 target="_blank">2SD1162
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;500
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;400
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=17692 target="_blank">2SD1163
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;300
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=17693 target="_blank">2SD1163A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;350
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=17734 target="_blank">2SD1196
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;110
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;2000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=17834 target="_blank">2SD1248
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;120
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;10000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=17880 target="_blank">2SD1271
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;130
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;80
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=17881 target="_blank">2SD1271A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;150
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;80
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=17940 target="_blank">2SD1315
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;175
+</td><td>&nbsp;5000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=17988 target="_blank">2SD1349
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;150
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18008 target="_blank">2SD1357
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;4000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18014 target="_blank">2SD1362
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;70
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18016 target="_blank">2SD1362O
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;70
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18018 target="_blank">2SD1362Y
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;120
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18024 target="_blank">2SD1364
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;300
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;45
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18040 target="_blank">2SD1377
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;120
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;10000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18041 target="_blank">2SD1377K
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;120
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;10000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18053 target="_blank">2SD1386
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;140
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;4000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=51969 target="_blank">2SD1411A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;70
+</td><td>&nbsp;TO220NIS
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18216 target="_blank">2SD1500
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;3000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18245 target="_blank">2SD1525
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;150
+</td><td>&nbsp;100
+</td><td>&nbsp;30
+</td><td>&nbsp;150
+</td><td>&nbsp;2000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18254 target="_blank">2SD1533
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;45
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;800
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18256 target="_blank">2SD1535
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;45
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;2000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18306 target="_blank">2SD1580
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;45
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18314 target="_blank">2SD1588
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18315 target="_blank">2SD1588O
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;80
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18316 target="_blank">2SD1588R
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18317 target="_blank">2SD1588Y
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;100
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18325 target="_blank">2SD1591
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;6000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18343 target="_blank">2SD1607
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;120
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;5000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18344 target="_blank">2SD1608
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;120
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;5000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18413 target="_blank">2SD1634
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;6000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=58449 target="_blank">2SD1710A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;900
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=58450 target="_blank">2SD1710F
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;45
+</td><td>&nbsp;900
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220F
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18601 target="_blank">2SD1756
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;200
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;3000
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18623 target="_blank">2SD1773
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;120
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;5000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18724 target="_blank">2SD1833
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18798 target="_blank">2SD1894
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;160
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;15000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18799 target="_blank">2SD1895
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;160
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;15000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18904 target="_blank">2SD1956
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;120
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;300
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18905 target="_blank">2SD1957
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;120
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;300
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18913 target="_blank">2SD1964
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;130
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18977 target="_blank">2SD2024
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;120
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;10000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=18978 target="_blank">2SD2025
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;120
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;10000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=19038 target="_blank">2SD2081
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;120
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;2000
+</td><td>&nbsp;TO220F FM20
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=19055 target="_blank">2SD2101
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;200
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;3000
+</td><td>&nbsp;TO220FM
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=19059 target="_blank">2SD2105
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;120
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;15000
+</td><td>&nbsp;TO220FM
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=19126 target="_blank">2SD2151
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;130
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;30
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=19135 target="_blank">2SD2163
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;4000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=19172 target="_blank">2SD2232
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;400
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;5000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=51975 target="_blank">2SD2414SM
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;100
+</td><td>&nbsp;TO220SM
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=56793 target="_blank">2SD2469
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;130
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;90
+</td><td>&nbsp;TO220E
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=56794 target="_blank">2SD2469A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;150
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;90
+</td><td>&nbsp;TO220E
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=56820 target="_blank">2SD2607
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220FN
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=56821 target="_blank">2SD2611
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;60
+</td><td>&nbsp;TO220FN
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=56828 target="_blank">2SD2639
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;160
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;60
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=19560 target="_blank">2SD460
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;2000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=19612 target="_blank">2SD498
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;75
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;3000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=19616 target="_blank">2SD501
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;60
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=19715 target="_blank">2SD568
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=19719 target="_blank">2SD569
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=19826 target="_blank">2SD633
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;8000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=20139 target="_blank">2SD843
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;70
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=20140 target="_blank">2SD843O
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;70
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=20141 target="_blank">2SD843Y
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;120
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=20184 target="_blank">2SD866
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;130
+</td><td>&nbsp;7
+</td><td>&nbsp;175
+</td><td>&nbsp;60
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=20185 target="_blank">2SD866A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;150
+</td><td>&nbsp;7
+</td><td>&nbsp;180
+</td><td>&nbsp;60
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=20213 target="_blank">2SD884
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;330
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=20214 target="_blank">2SD885
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;330
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=20316 target="_blank">2SD970
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;120
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;10000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=20317 target="_blank">2SD970K
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;120
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=20324 target="_blank">2SD976
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;300
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=20325 target="_blank">2SD976A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;350
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=50787 target="_blank">2STP535FP
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;37
+</td><td>&nbsp;180
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220FP
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=20395 target="_blank">2T7042
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;120
+</td><td>&nbsp;300
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=20396 target="_blank">2T7043
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;120
+</td><td>&nbsp;400
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=20397 target="_blank">2T7044
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;120
+</td><td>&nbsp;450
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=59696 target="_blank">3DA142T
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;100
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=59706 target="_blank">3DA2654
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=59700 target="_blank">3DA3834
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;200
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;70
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=59701 target="_blank">3DA3834F
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;200
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;70
+</td><td>&nbsp;TO220F
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63713 target="_blank">3DD13007B8
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;700
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63714 target="_blank">3DD13007H8D
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;700
+</td><td>&nbsp;9
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63715 target="_blank">3DD13007X1
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;700
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63716 target="_blank">3DD13007Y8
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;520
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63718 target="_blank">3DD13007Z8
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;75
+</td><td>&nbsp;350
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=59314 target="_blank">3DD13007_B8
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;700
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=59320 target="_blank">3DD13007_B8D
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;700
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=59315 target="_blank">3DD13007_H8D
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;700
+</td><td>&nbsp;9
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=59316 target="_blank">3DD13007_X1
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;700
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=59317 target="_blank">3DD13007_Y8
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;520
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=59319 target="_blank">3DD13007_Z8
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;75
+</td><td>&nbsp;350
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63720 target="_blank">3DD13009A8
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;700
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63722 target="_blank">3DD13009C8
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;700
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63723 target="_blank">3DD13009X8D
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;350
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=59321 target="_blank">3DD13009_A8
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;700
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=59323 target="_blank">3DD13009_C8
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;700
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=59324 target="_blank">3DD13009_X8D
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;350
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63724 target="_blank">3DD13012A8
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;750
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=59325 target="_blank">3DD13012_A8
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;750
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63747 target="_blank">3DD2334
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;150
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=62072 target="_blank">3DD4206
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;75
+</td><td>&nbsp;600
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=64055 target="_blank">3DK3039
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;175
+</td><td>&nbsp;25
+</td><td>&nbsp;TO276AB TO220 TO257
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=20889 target="_blank">40871
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;120
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;50
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=20897 target="_blank">40879
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;75
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=20899 target="_blank">40881
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;75
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25024 target="_blank">BD267A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;55
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;750
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25025 target="_blank">BD267B
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;55
+</td><td>&nbsp;120
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;750
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25030 target="_blank">BD269A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;75
+</td><td>&nbsp;100
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;5000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25058 target="_blank">BD301B
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;55
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;30
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25064 target="_blank">BD303B
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;55
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;30
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25428 target="_blank">BD543C
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25429 target="_blank">BD543D
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;120
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25476 target="_blank">BD601
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;100
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25508 target="_blank">BD647
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;175
+</td><td>&nbsp;750
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25512 target="_blank">BD649
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;62
+</td><td>&nbsp;120
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;750
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25516 target="_blank">BD651
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;62
+</td><td>&nbsp;140
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;750
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25572 target="_blank">BD711
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;75
+</td><td>&nbsp;100
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25591 target="_blank">BD743C
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;110
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25592 target="_blank">BD743D
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;130
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25593 target="_blank">BD743E
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25594 target="_blank">BD743F
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;170
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25644 target="_blank">BD801
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;65
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;30
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25748 target="_blank">BD901
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;750
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25756 target="_blank">BD911
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;100
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25859 target="_blank">BDS10
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;
+</td><td>&nbsp;15
+</td><td>&nbsp;200
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25861 target="_blank">BDS11
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;
+</td><td>&nbsp;15
+</td><td>&nbsp;200
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25862 target="_blank">BDS12
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;
+</td><td>&nbsp;15
+</td><td>&nbsp;200
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25870 target="_blank">BDS16
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;
+</td><td>&nbsp;15
+</td><td>&nbsp;200
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25872 target="_blank">BDS17
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;
+</td><td>&nbsp;15
+</td><td>&nbsp;200
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25895 target="_blank">BDT21
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;62
+</td><td>&nbsp;130
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;500
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25952 target="_blank">BDT55
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;100
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25954 target="_blank">BDT57
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;120
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25985 target="_blank">BDT63B
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;100
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;2000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=25987 target="_blank">BDT63C
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;120
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;2000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=26002 target="_blank">BDT65B
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;125
+</td><td>&nbsp;100
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;2000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=26004 target="_blank">BDT65C
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;125
+</td><td>&nbsp;120
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;2000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=26015 target="_blank">BDT85
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;125
+</td><td>&nbsp;100
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;50
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=26019 target="_blank">BDT87
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;125
+</td><td>&nbsp;120
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;50
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=26031 target="_blank">BDT95
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;100
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=26054 target="_blank">BDV49
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;62.5
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;175
+</td><td>&nbsp;750
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=26114 target="_blank">BDW42
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;85
+</td><td>&nbsp;100
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;2000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=62629 target="_blank">BDW42G
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;85
+</td><td>&nbsp;100
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;250
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=26115 target="_blank">BDW43
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;85
+</td><td>&nbsp;120
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;2000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=26155 target="_blank">BDW73C
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;750
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=26156 target="_blank">BDW73D
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;120
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;750
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=26179 target="_blank">BDW93C
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;100
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;15000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=50801 target="_blank">BDW93CFP
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;33
+</td><td>&nbsp;100
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;750
+</td><td>&nbsp;TO220FP
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=26250 target="_blank">BDX33C
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;100
+</td><td>&nbsp;10
+</td><td>&nbsp;200
+</td><td>&nbsp;750
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=62638 target="_blank">BDX33CG
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;100
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;750
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=26251 target="_blank">BDX33D
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;120
+</td><td>&nbsp;10
+</td><td>&nbsp;200
+</td><td>&nbsp;750
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=26252 target="_blank">BDX33E
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;140
+</td><td>&nbsp;10
+</td><td>&nbsp;200
+</td><td>&nbsp;750
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=26289 target="_blank">BDX53C
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;750
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=62642 target="_blank">BDX53CG
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;750
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=26291 target="_blank">BDX53D
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;120
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;750
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=26292 target="_blank">BDX53E
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;140
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;750
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=26293 target="_blank">BDX53F
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;160
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;750
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=26303 target="_blank">BDX54D
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;120
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;750
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=26547 target="_blank">BEL3055
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;75
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;175
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=26550 target="_blank">BEL406
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;
+</td><td>&nbsp;7
+</td><td>&nbsp;175
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=26551 target="_blank">BEL407
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;
+</td><td>&nbsp;7
+</td><td>&nbsp;175
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=26554 target="_blank">BEL866B
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;
+</td><td>&nbsp;7
+</td><td>&nbsp;175
+</td><td>&nbsp;60
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=57898 target="_blank">BLD137D
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;700
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220 TO220S
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=57899 target="_blank">BLD137DL
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;400
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220 TO220S
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=57900 target="_blank">BLD139D
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;700
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220 TO220S
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=57901 target="_blank">BLD139DL
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;400
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220 TO220S
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=57902 target="_blank">BLD155DL
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;400
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220 TO220S
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=62706 target="_blank">BR3DD13007HV7R
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;45
+</td><td>&nbsp;900
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=62707 target="_blank">BR3DD13007V8F
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;700
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220F
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=62709 target="_blank">BR3DD13007X7R
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;700
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=62710 target="_blank">BR3DD13007X8F
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;700
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220F
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=62712 target="_blank">BR3DD13009X7R
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;700
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=62713 target="_blank">BR3DD13009X8F
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;700
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220F
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=62715 target="_blank">BR3DD13009Z8F
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;700
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220F
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=58029 target="_blank">BTC1510E3
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;65
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;2000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=58031 target="_blank">BTC1510FP
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;2000
+</td><td>&nbsp;TO220FP
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29551 target="_blank">BU104P
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;400
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29561 target="_blank">BU109NP
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;85
+</td><td>&nbsp;330
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29562 target="_blank">BU109P
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;330
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29614 target="_blank">BU184
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;400
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;200
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29615 target="_blank">BU189
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;330
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;100
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=60114 target="_blank">BU406A8
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;250
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;30
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=58488 target="_blank">BU406S
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;200
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;60
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=59365 target="_blank">BU406_A8
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;250
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;50
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29701 target="_blank">BU407
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;330
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29749 target="_blank">BU522
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;75
+</td><td>&nbsp;400
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;250
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29750 target="_blank">BU522A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;75
+</td><td>&nbsp;450
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;250
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29751 target="_blank">BU522B
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;75
+</td><td>&nbsp;475
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;250
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29786 target="_blank">BU806
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;400
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;100
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29787 target="_blank">BU806F
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;400
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;100
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29789 target="_blank">BU807
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;330
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;100
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29790 target="_blank">BU807F
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;330
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;100
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29797 target="_blank">BU810
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;75
+</td><td>&nbsp;600
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;100
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29817 target="_blank">BU921T
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;105
+</td><td>&nbsp;450
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;50
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29826 target="_blank">BU922T
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;105
+</td><td>&nbsp;500
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;50
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29839 target="_blank">BU931T
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;125
+</td><td>&nbsp;500
+</td><td>&nbsp;10
+</td><td>&nbsp;175
+</td><td>&nbsp;80
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29844 target="_blank">BU931ZT
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;45
+</td><td>&nbsp;500
+</td><td>&nbsp;15
+</td><td>&nbsp;175
+</td><td>&nbsp;80
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=60117 target="_blank">BU941A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;150
+</td><td>&nbsp;
+</td><td>&nbsp;15
+</td><td>&nbsp;175
+</td><td>&nbsp;300
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29855 target="_blank">BU941T
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;150
+</td><td>&nbsp;500
+</td><td>&nbsp;15
+</td><td>&nbsp;175
+</td><td>&nbsp;300
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=58243 target="_blank">BU941ZE3
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;150
+</td><td>&nbsp;350
+</td><td>&nbsp;15
+</td><td>&nbsp;175
+</td><td>&nbsp;300
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=58245 target="_blank">BU941ZFP
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;55
+</td><td>&nbsp;350
+</td><td>&nbsp;15
+</td><td>&nbsp;175
+</td><td>&nbsp;300
+</td><td>&nbsp;TO220FP
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=58246 target="_blank">BU941ZLE3
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;150
+</td><td>&nbsp;350
+</td><td>&nbsp;15
+</td><td>&nbsp;175
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29861 target="_blank">BU941ZT
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;150
+</td><td>&nbsp;350
+</td><td>&nbsp;15
+</td><td>&nbsp;175
+</td><td>&nbsp;300
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=60119 target="_blank">BU941ZTFP
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;55
+</td><td>&nbsp;350
+</td><td>&nbsp;15
+</td><td>&nbsp;175
+</td><td>&nbsp;300
+</td><td>&nbsp;TO220F
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29868 target="_blank">BUD47
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;850
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;100
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29869 target="_blank">BUD47A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;1000
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;100
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=52847 target="_blank">BUF405AFP
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;39
+</td><td>&nbsp;1000
+</td><td>&nbsp;7.5
+</td><td>&nbsp;
+</td><td>&nbsp;100
+</td><td>&nbsp;TO220F
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29915 target="_blank">BUF642
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;550
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29916 target="_blank">BUF644
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;500
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29917 target="_blank">BUF646
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;400
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29918 target="_blank">BUF646A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;450
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29919 target="_blank">BUF650
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;500
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29920 target="_blank">BUF653
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;500
+</td><td>&nbsp;11
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29921 target="_blank">BUF654
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;500
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29922 target="_blank">BUF660
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;500
+</td><td>&nbsp;14
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29923 target="_blank">BUF672
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;550
+</td><td>&nbsp;11
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29926 target="_blank">BUF744
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;550
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=50144 target="_blank">BUJ105A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;700
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;11
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=50147 target="_blank">BUJ106A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;700
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;11
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29953 target="_blank">BUL147
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;125
+</td><td>&nbsp;700
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;14
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29971 target="_blank">BUL48
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;75
+</td><td>&nbsp;800
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;30
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29978 target="_blank">BUL510
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;1000
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29985 target="_blank">BUL53A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;45
+</td><td>&nbsp;700
+</td><td>&nbsp;9
+</td><td>&nbsp;200
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=29986 target="_blank">BUL53B
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;45
+</td><td>&nbsp;550
+</td><td>&nbsp;12
+</td><td>&nbsp;200
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=30002 target="_blank">BUL67
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;700
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=60125 target="_blank">BUL743
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;1200
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;24
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=50823 target="_blank">BUL85D
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;500
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;60
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=50824 target="_blank">BUL89
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;110
+</td><td>&nbsp;850
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=60126 target="_blank">BUL98
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;110
+</td><td>&nbsp;800
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=30147 target="_blank">BUS36
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;107
+</td><td>&nbsp;250
+</td><td>&nbsp;12
+</td><td>&nbsp;175
+</td><td>&nbsp;30
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=30148 target="_blank">BUS37
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;107
+</td><td>&nbsp;300
+</td><td>&nbsp;12
+</td><td>&nbsp;175
+</td><td>&nbsp;30
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=30177 target="_blank">BUT12
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;850
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;30
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=30178 target="_blank">BUT12A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;125
+</td><td>&nbsp;1000
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;30
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=30203 target="_blank">BUT22A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;125
+</td><td>&nbsp;750
+</td><td>&nbsp;8
+</td><td>&nbsp;200
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=30204 target="_blank">BUT22B
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;125
+</td><td>&nbsp;750
+</td><td>&nbsp;8
+</td><td>&nbsp;200
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=30206 target="_blank">BUT22C
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;125
+</td><td>&nbsp;850
+</td><td>&nbsp;8
+</td><td>&nbsp;200
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=30220 target="_blank">BUT54
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;800
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=30221 target="_blank">BUT55
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;105
+</td><td>&nbsp;400
+</td><td>&nbsp;12
+</td><td>&nbsp;200
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=52854 target="_blank">BUT56AF
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;1000
+</td><td>&nbsp;8
+</td><td>&nbsp;
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220Fa
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=30228 target="_blank">BUT60
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;125
+</td><td>&nbsp;200
+</td><td>&nbsp;15
+</td><td>&nbsp;200
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=30229 target="_blank">BUT62
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;125
+</td><td>&nbsp;400
+</td><td>&nbsp;15
+</td><td>&nbsp;200
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=30259 target="_blank">BUV26
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;85
+</td><td>&nbsp;180
+</td><td>&nbsp;20
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=30260 target="_blank">BUV26A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;65
+</td><td>&nbsp;200
+</td><td>&nbsp;14
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=30263 target="_blank">BUV27
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;85
+</td><td>&nbsp;250
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=30264 target="_blank">BUV27A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;85
+</td><td>&nbsp;300
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=30267 target="_blank">BUV28
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;85
+</td><td>&nbsp;400
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=30268 target="_blank">BUV28A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;65
+</td><td>&nbsp;450
+</td><td>&nbsp;10
+</td><td>&nbsp;160
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=30281 target="_blank">BUV406
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;400
+</td><td>&nbsp;7
+</td><td>&nbsp;200
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=30321 target="_blank">BUV66
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;125
+</td><td>&nbsp;450
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=30395 target="_blank">BUW41
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;450
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=30396 target="_blank">BUW41A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;550
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=30397 target="_blank">BUW41B
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;650
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=30421 target="_blank">BUW64A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;140
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=30422 target="_blank">BUW64B
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;160
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=30423 target="_blank">BUW64C
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;180
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=54855 target="_blank">C44H1
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;35
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=54856 target="_blank">C44H10
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;35
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=54857 target="_blank">C44H11
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;35
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=54858 target="_blank">C44H2
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;60
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=54859 target="_blank">C44H4
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;35
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=54860 target="_blank">C44H5
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;60
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=54861 target="_blank">C44H7
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;35
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=54862 target="_blank">C44H8
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;60
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=55010 target="_blank">C44VH10
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;83
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=54956 target="_blank">CD909
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;100
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;60
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=55687 target="_blank">CDL13007D
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;700
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=55709 target="_blank">CFD1025
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;35
+</td><td>&nbsp;200
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;1500
+</td><td>&nbsp;TO220FP
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=55032 target="_blank">CFD811
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;65
+</td><td>&nbsp;110
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220FP
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=55752 target="_blank">CJF102
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;200
+</td><td>&nbsp;TO220FP
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=55035 target="_blank">CJF15028
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;36
+</td><td>&nbsp;120
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220FP
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=55037 target="_blank">CJF15030
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;36
+</td><td>&nbsp;150
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220FP
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=55045 target="_blank">CJF44H11
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;35
+</td><td>&nbsp;TO220FP
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=55048 target="_blank">CJF6388
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;100
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;3000
+</td><td>&nbsp;TO220FP
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=55126 target="_blank">CN102
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;
+</td><td>&nbsp;2000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=55487 target="_blank">CSC2335
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=54995 target="_blank">CSC3039
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=55925 target="_blank">CSD1025
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;200
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;1500
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=55645 target="_blank">CSD811
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;110
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=49708 target="_blank">D44VH
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;83
+</td><td>&nbsp;
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=32491 target="_blank">D44VH10
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;75
+</td><td>&nbsp;100
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=65239 target="_blank">D44VH10G
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;83
+</td><td>&nbsp;100
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=32501 target="_blank">D44VM10
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=33451 target="_blank">ECG2315
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;400
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;100
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=33457 target="_blank">ECG2326
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;3000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=33465 target="_blank">ECG2336
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;45
+</td><td>&nbsp;
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;2000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=33471 target="_blank">ECG2343
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;125
+</td><td>&nbsp;
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=33534 target="_blank">ECG261
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;65
+</td><td>&nbsp;
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;100
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=33536 target="_blank">ECG263
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;65
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;100
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=33595 target="_blank">ECG331
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;100
+</td><td>&nbsp;15
+</td><td>&nbsp;175
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=33643 target="_blank">ECG379
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;700
+</td><td>&nbsp;12
+</td><td>&nbsp;175
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=33645 target="_blank">ECG380
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;150
+</td><td>&nbsp;7
+</td><td>&nbsp;175
+</td><td>&nbsp;60
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=33693 target="_blank">ECG54
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;150
+</td><td>&nbsp;8
+</td><td>&nbsp;175
+</td><td>&nbsp;100
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=33954 target="_blank">ESM2633
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;100
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=34031 target="_blank">ESM737
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;75
+</td><td>&nbsp;400
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;50
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=34066 target="_blank">ET365
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;450
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;500
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=34084 target="_blank">ET404
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;850
+</td><td>&nbsp;10
+</td><td>&nbsp;175
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=34088 target="_blank">ET405
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;450
+</td><td>&nbsp;10
+</td><td>&nbsp;175
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=34360 target="_blank">FGT3055
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;75
+</td><td>&nbsp;100
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=65986 target="_blank">FHD651
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;62.5
+</td><td>&nbsp;140
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;750
+</td><td>&nbsp;TO220 TO257
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=66014 target="_blank">FJP13009H2TU
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;700
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=66018 target="_blank">FJP5200
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;250
+</td><td>&nbsp;17
+</td><td>&nbsp;150
+</td><td>&nbsp;55
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=34749 target="_blank">FPT6005
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;750
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=35288 target="_blank">GEP3055
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;115
+</td><td>&nbsp;100
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=36253 target="_blank">GT811
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;400
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;300
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=36254 target="_blank">GT812
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;400
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;300
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=61820 target="_blank">HBDW93C
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;100
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;750
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=61823 target="_blank">HBU406
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;400
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=61824 target="_blank">HBU406H
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;400
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=61829 target="_blank">HC4106
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=61830 target="_blank">HC4242
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;450
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=61832 target="_blank">HC4550
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;100
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=36504 target="_blank">HEPS9151
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;65
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=54720 target="_blank">HMJE13007
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;700
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=54721 target="_blank">HMJE13007A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;700
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=54722 target="_blank">HMJE13009A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;700
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;13
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=61840 target="_blank">HP102
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=61847 target="_blank">HP142T
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;100
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=61848 target="_blank">HP142TS
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=37737 target="_blank">KSC2334
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;150
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=37738 target="_blank">KSC2334O
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;150
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;70
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=37739 target="_blank">KSC2334R
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;150
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=37740 target="_blank">KSC2334Y
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;150
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;120
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=37741 target="_blank">KSC2335
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=37743 target="_blank">KSC2335O
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;30
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=37744 target="_blank">KSC2335R
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=37745 target="_blank">KSC2335Y
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=37859 target="_blank">KSC3158
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=37860 target="_blank">KSC3158O
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;30
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=37861 target="_blank">KSC3158R
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=37862 target="_blank">KSC3158Y
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=37942 target="_blank">KSC5032
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;500
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;50
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=37965 target="_blank">KSC5337
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;700
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=38031 target="_blank">KSD1588
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=38032 target="_blank">KSD1588O
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;80
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=38033 target="_blank">KSD1588R
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=38034 target="_blank">KSD1588Y
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;100
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=38156 target="_blank">KSD5740
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;200
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=38157 target="_blank">KSD5741
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;200
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=38158 target="_blank">KSD5742
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;200
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=49517 target="_blank">KSE44H
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;
+</td><td>&nbsp;60
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=39508 target="_blank">KT899A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;160
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=53706 target="_blank">KTD1415V
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;2000
+</td><td>&nbsp;TO220IS
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=39835 target="_blank">KTD3055
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;175
+</td><td>&nbsp;55
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63321 target="_blank">MJE13005VT7
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;75
+</td><td>&nbsp;400
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=53768 target="_blank">MJE13007F
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;700
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;19
+</td><td>&nbsp;TO220IS
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63326 target="_blank">MJE13007V8
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;700
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220F
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63329 target="_blank">MJE13007X8
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;700
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220F
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=57881 target="_blank">MJE13009A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;130
+</td><td>&nbsp;700
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO3P TO220 TO220S
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=57775 target="_blank">MJE13009D
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;700
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=57776 target="_blank">MJE13009K
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;700
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO3P TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=57777 target="_blank">MJE13009P
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;700
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO3P TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63333 target="_blank">MJE13009X7
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;700
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63334 target="_blank">MJE13009X8
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;700
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220F
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63336 target="_blank">MJE13009Z7
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;700
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63337 target="_blank">MJE13009Z8
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;700
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220F
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=58503 target="_blank">MJE13009ZJ
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;700
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220S
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63339 target="_blank">MJE13011
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;450
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220 TO220F TO3P
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=40678 target="_blank">MJE15028
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;120
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63341 target="_blank">MJE15028G
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;120
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=40680 target="_blank">MJE15030
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;150
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63343 target="_blank">MJE15030G
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;150
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=49773 target="_blank">MJE15032
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;
+</td><td>&nbsp;8
+</td><td>&nbsp;
+</td><td>&nbsp;50
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63345 target="_blank">MJE15032G
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;250
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;70
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=40695 target="_blank">MJE18008
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;125
+</td><td>&nbsp;1000
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;14
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63354 target="_blank">MJE18008G
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;125
+</td><td>&nbsp;1000
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;14
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=40802 target="_blank">MJE33C
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;100
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=40886 target="_blank">MJE5740
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;600
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;200
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=40887 target="_blank">MJE5741
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;700
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=40888 target="_blank">MJE5742
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;800
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;200
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63377 target="_blank">MJE5742G
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;50
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=40909 target="_blank">MJE6045
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;75
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63385 target="_blank">MJE6045T
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;75
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63395 target="_blank">MJF15030G
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;36
+</td><td>&nbsp;150
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63398 target="_blank">MJF18008G
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;125
+</td><td>&nbsp;1000
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;14
+</td><td>&nbsp;TO220F
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=49779 target="_blank">MJF44H11
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;
+</td><td>&nbsp;60
+</td><td>&nbsp;TO220FP
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63403 target="_blank">MJF44H11G
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;36
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220F
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=63406 target="_blank">MJF6388G
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;100
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;3000
+</td><td>&nbsp;TO220F
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=44319 target="_blank">NSP3055
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;115
+</td><td>&nbsp;100
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=44326 target="_blank">NSP601
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;30
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=44361 target="_blank">NTE2315
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;400
+</td><td>&nbsp;8
+</td><td>&nbsp;
+</td><td>&nbsp;125
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=44372 target="_blank">NTE2343
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;120
+</td><td>&nbsp;12
+</td><td>&nbsp;
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=44417 target="_blank">NTE2547
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;110
+</td><td>&nbsp;8
+</td><td>&nbsp;
+</td><td>&nbsp;4000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=44429 target="_blank">NTE261
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;65
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=44431 target="_blank">NTE263
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;65
+</td><td>&nbsp;100
+</td><td>&nbsp;10
+</td><td>&nbsp;
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=58621 target="_blank">NTE377
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=59966 target="_blank">PMC4106
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;500
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=45195 target="_blank">RCA122
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;65
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=45215 target="_blank">RCA1B04
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;150
+</td><td>&nbsp;225
+</td><td>&nbsp;7
+</td><td>&nbsp;200
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=45216 target="_blank">RCA1B05
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;150
+</td><td>&nbsp;275
+</td><td>&nbsp;7
+</td><td>&nbsp;200
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=45230 target="_blank">RCA3055
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;75
+</td><td>&nbsp;100
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=45239 target="_blank">RCA41
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;65
+</td><td>&nbsp;
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;15
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=45243 target="_blank">RCA41SDH
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;75
+</td><td>&nbsp;
+</td><td>&nbsp;16
+</td><td>&nbsp;150
+</td><td>&nbsp;30
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=45522 target="_blank">S876T
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;110
+</td><td>&nbsp;1200
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=62067 target="_blank">SBP13007D
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;700
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=62214 target="_blank">SBP5307DO
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;700
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=52967 target="_blank">SD401
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=52969 target="_blank">SD403
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=52971 target="_blank">SD405
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=52973 target="_blank">SD407
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=52975 target="_blank">SD409
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=52977 target="_blank">SD451
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=52979 target="_blank">SD453
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=52981 target="_blank">SD455
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=52983 target="_blank">SD457
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=52985 target="_blank">SD459
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;
+</td><td>&nbsp;10
+</td><td>&nbsp;
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=45699 target="_blank">SE9302
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;100
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=45845 target="_blank">SGSD00020
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;650
+</td><td>&nbsp;8
+</td><td>&nbsp;175
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=45850 target="_blank">SGSD93E
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;160
+</td><td>&nbsp;12
+</td><td>&nbsp;175
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=45851 target="_blank">SGSD93F
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;180
+</td><td>&nbsp;12
+</td><td>&nbsp;175
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=45852 target="_blank">SGSD93G
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;200
+</td><td>&nbsp;12
+</td><td>&nbsp;175
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=45856 target="_blank">SGSF341
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;85
+</td><td>&nbsp;850
+</td><td>&nbsp;10
+</td><td>&nbsp;175
+</td><td>&nbsp;
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=45857 target="_blank">SGSF343
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;85
+</td><td>&nbsp;1000
+</td><td>&nbsp;8
+</td><td>&nbsp;175
+</td><td>&nbsp;
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=45858 target="_blank">SGSF344
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;85
+</td><td>&nbsp;1200
+</td><td>&nbsp;7
+</td><td>&nbsp;175
+</td><td>&nbsp;
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=45937 target="_blank">SM2174
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;
+</td><td>&nbsp;15
+</td><td>&nbsp;200
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=45938 target="_blank">SM2175
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;
+</td><td>&nbsp;15
+</td><td>&nbsp;200
+</td><td>&nbsp;200
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=45939 target="_blank">SM2176
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;
+</td><td>&nbsp;15
+</td><td>&nbsp;200
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=45954 target="_blank">SM3176
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;
+</td><td>&nbsp;20
+</td><td>&nbsp;200
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=60053 target="_blank">SM56B
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;85
+</td><td>&nbsp;200
+</td><td>&nbsp;14
+</td><td>&nbsp;175
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=60054 target="_blank">SM58B
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;180
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=59631 target="_blank">ST13009
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;100
+</td><td>&nbsp;700
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=58574 target="_blank">ST2SD1163A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;40
+</td><td>&nbsp;350
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;25
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=58596 target="_blank">STBD911
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;90
+</td><td>&nbsp;100
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;40
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=58598 target="_blank">STBDW42
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;85
+</td><td>&nbsp;100
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=57291 target="_blank">STD13007P
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;87
+</td><td>&nbsp;700
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220AB
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=52857 target="_blank">T06
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;60
+</td><td>&nbsp;400
+</td><td>&nbsp;10
+</td><td>&nbsp;
+</td><td>&nbsp;80
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=46789 target="_blank">TIP102
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=46807 target="_blank">TIP132
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;100
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=46819 target="_blank">TIP142T
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;100
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;500
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=46829 target="_blank">TIP150
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;300
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;200
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=46830 target="_blank">TIP151
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;350
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;200
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=46831 target="_blank">TIP152
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;80
+</td><td>&nbsp;400
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;200
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=47018 target="_blank">TIP73C
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;32
+</td><td>&nbsp;110
+</td><td>&nbsp;15
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=47072 target="_blank">TIPL790
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;60
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=47073 target="_blank">TIPL790A
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;70
+</td><td>&nbsp;200
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;60
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=61128 target="_blank">TP7L10
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;30
+</td><td>&nbsp;100
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;1500
+</td><td>&nbsp;TO220F
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=55908 target="_blank">TT2190LS
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;35
+</td><td>&nbsp;1500
+</td><td>&nbsp;8
+</td><td>&nbsp;150
+</td><td>&nbsp;10
+</td><td>&nbsp;TO220FI
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=55909 target="_blank">TT2194
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;50
+</td><td>&nbsp;500
+</td><td>&nbsp;12
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=65914 target="_blank">WBP3308
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;45
+</td><td>&nbsp;900
+</td><td>&nbsp;7
+</td><td>&nbsp;150
+</td><td>&nbsp;20
+</td><td>&nbsp;TO220
+</td></tr><tr align="left"><td><a href=https://alltransistors.com/transistor.php?transistor=60015 target="_blank">WW263
+</a></td><td>&nbsp;Si
+</td><td>&nbsp;NPN
+</td><td>&nbsp;65
+</td><td>&nbsp;100
+</td><td>&nbsp;10
+</td><td>&nbsp;150
+</td><td>&nbsp;1000
+</td><td>&nbsp;TO220
+</td></tr></tbody></table><p>About 547 results.<p>&nbsp;
+<!-- al-ssylki-down-adapt-190523 -->
+				<ins class="adsbygoogle"
+				     style="display:block"
+				     data-ad-client="ca-pub-7146070913866998"
+				     data-ad-slot="5887189376"
+				     data-ad-format="link"
+				     data-full-width-responsive="true"></ins>
+				
+<p align="right">&nbsp;<br>
+<a href="#"><img border="0" src="https://alltransistors.com/images/up.gif" alt="Back to Top"></a>
+<p>&nbsp;
+  </div>	
+    </div>
+	<div id="colRight">
+	<div class="z" > 
+		<div align="center">
+		 
+<br><a href="https://alltransistors.com/crsearch.php?mat=Si&struct=NPN&r1=0&r2=0&r1r2=0&pc=30&ucb=100&uce=0&ueb=0&ic=7&tj=150&ft=0&cc=0&hfe=10&caps=TO220&page=0" hreflang="en"><img border="0" src="https://alltransistors.com/images/us.png" alt=""></a>&nbsp;
+<a href="https://alltransistors.com/es/crsearch.php?mat=Si&struct=NPN&r1=0&r2=0&r1r2=0&pc=30&ucb=100&uce=0&ueb=0&ic=7&tj=150&ft=0&cc=0&hfe=10&caps=TO220&page=0" hreflang="es"><img border="0" src="https://alltransistors.com/images/es.png" alt=""></a>&nbsp;
+<a href="https://alltransistors.com/ru/crsearch.php?mat=Si&struct=NPN&r1=0&r2=0&r1r2=0&pc=30&ucb=100&uce=0&ueb=0&ic=7&tj=150&ft=0&cc=0&hfe=10&caps=TO220&page=0" hreflang="ru"><img border="0" src="https://alltransistors.com/images/ru.png" alt=""></a>&nbsp;
+ 
+<br>
+
+<p>
+<a href="https://alltransistors.com/social.php"><img border="0" src="https://alltransistors.com/images/social.png" alt="social"></a>&nbsp;
+<br>
+		<p>
+
+<h3 align="center"><a href="https://alltransistors.com/spisall.php">LIST</a></h3>
+<h3>Last Update</h3>
+<p>BJT: 
+ <a href=https://alltransistors.com/transistor.php?transistor=69453>UN511Z
+</a> |  <a href=https://alltransistors.com/transistor.php?transistor=69452>UN511V
+</a> |  <a href=https://alltransistors.com/transistor.php?transistor=69451>UN511T
+</a> |  <a href=https://alltransistors.com/transistor.php?transistor=69450>UN511N
+</a> |  <a href=https://alltransistors.com/transistor.php?transistor=69449>UN511M
+</a> |  <a href=https://alltransistors.com/transistor.php?transistor=69448>UN511L
+</a> |  <a href=https://alltransistors.com/transistor.php?transistor=69447>UN511H
+</a> |  <a href=https://alltransistors.com/transistor.php?transistor=69446>UN511F
+</a> |  <a href=https://alltransistors.com/transistor.php?transistor=69445>UN511E
+</a> |  <a href=https://alltransistors.com/transistor.php?transistor=69444>UN511D
+</a> |  <a href=https://alltransistors.com/transistor.php?transistor=69443>UN5119
+</a> |  <a href=https://alltransistors.com/transistor.php?transistor=69442>UN5118
+</a> |  <a href=https://alltransistors.com/transistor.php?transistor=69441>UN5117
+</a> |  <a href=https://alltransistors.com/transistor.php?transistor=69440>UN5116
+</a> |  <a href=https://alltransistors.com/transistor.php?transistor=69439>UN5115
+</a> |  <a href=https://alltransistors.com/transistor.php?transistor=69438>UN5114
+</a> |  <a href=https://alltransistors.com/transistor.php?transistor=69437>UN5113
+</a> |  <a href=https://alltransistors.com/transistor.php?transistor=69436>UN5112
+</a> |  <a href=https://alltransistors.com/transistor.php?transistor=69435>UN5111
+</a> |  <a href=https://alltransistors.com/transistor.php?transistor=69434>UN5110
+</a> | 
+
+<p>
+<form action="https://alltransistors.com/smd-search.php" method="GET" class="searchsmd">
+	<input type="search" name="search" placeholder="SMD code search" class="input" value=""/>
+	<input type="submit" name="" value=""  class="submit" />
+</form>
+<p>&nbsp;<p>
+
+
+<div align="center">
+<p>&nbsp;<br>
+
+<!-- al-vpravo-adapt -->
+		<ins class="adsbygoogle"
+		     style="display:block"
+		     data-ad-client="ca-pub-7146070913866998"
+		     data-ad-slot="6126883059"
+		     data-ad-format="auto"></ins>
+</div>
+
+<p align="right">&nbsp;<br>
+<a href="#"><img border="0" src="https://alltransistors.com/images/up.gif" alt="Back to Top"></a>
+
+
+<p>&nbsp;
+</div>
+         </div>
+    </div>
+    </div>
+	<div id="footer">
+		<div class="z">
+			<h3 align="center">AllTransistors(C)</h3>
+<p><a href="https://alltransistors.com/">BJT</a> | 
+| <a href="https://alltransistors.com/mosfet/">MOSFET</a> | 
+| <a href="https://alltransistors.com/igbt/">IGBT</a> | 
+| <a href="https://alltransistors.com/scr/">SCR</a> | 
+| <a href="https://alltransistors.com/sait_pr_tran.php">MANUFACTURER SITES</a> |
+| <a href="https://alltransistors.com/smd-search.php">SMD CODE</a> |
+| <a href="https://alltransistors.com/korp_tran.php">PACKAGES</a> | 
+| <a href="https://alltransistors.com/mobile-apps.php">MOBILE APPS</a> |
+| <a href="https://alltransistors.com/contact.php">Privacy and cookie policy</a> |
+| <a href="https://alltransistors.com/disclaimer.php">Disclaimer</a> |
+| <a href="https://alltransistors.com/terms.php">Terms and conditions</a> |
+| <a href="https://alltransistors.com/contact.php">Contact</a>
+
+<p align="center">DISCLOSURE: As an Amazon Associate I earn from qualifying purchases.	
+
+
+		</div>
+    </div>
+    <br>&nbsp;
+</div>
+
+			<script>
+			(adsbygoogle = window.adsbygoogle || []).push({});
+			</script>
+			<script>
+			(adsbygoogle = window.adsbygoogle || []).push({});
+			</script>
+			<script>
+			(adsbygoogle = window.adsbygoogle || []).push({});
+			</script>
+			<script>
+			(adsbygoogle = window.adsbygoogle || []).push({});
+			</script><script> 
+  
+  // Run after all the page elements have loaded
+  window.onload = function(){ 
+  
+    // This will take care of asynchronous Google ads
+    setTimeout(function() { 
+      
+	      // We are targeting the first banner ad of AdSense
+	      var ad = document.querySelector("ins.adsbygoogle");
+	      
+	      // If the ad contains no innerHTML, ad blockers are at work
+	      if (ad && ad.innerHTML.replace(/\s/g, "").length == 0) {
+	               
+	      document.getElementById("sample-get-price").style.display = "inline";
+		    
+	      document.getElementById("sample-top").style.display = "inline"; 
+	      document.getElementById("sample-center").style.display = "inline";  
+		  
+		  document.getElementById("goog-top").style.display = "none";
+		  document.getElementById("goog-center").style.display = "none";
+		  
+	      document.getElementById("err").innerHTML = '<p>Adblock';	
+
+	  }
+    }, 1000); //  The ad blocker check is performed 1 seconds after the page load
+
+  }; 
+  
+</script>
+
+ </body>
+</html>
