@@ -1,0 +1,2 @@
+# transistors
+dados sobre transistors
